@@ -14,11 +14,18 @@ public class LanguageService {
     @Autowired
     private LanguageRepository languageRepository;
 
-    public Language saveLaguage(Language language) {
+    public Language saveLanguage(Language language) {
         return languageRepository.save(language);
     }
 
     public Optional<Language> getLanguage(Long languageId) {
         return languageRepository.findById(languageId);
+    }
+
+    public boolean checkLanguageExistence(String language) {
+        if (languageRepository.findByLanguage(language) != null) {
+            return true;
+        }
+        return false;
     }
 }

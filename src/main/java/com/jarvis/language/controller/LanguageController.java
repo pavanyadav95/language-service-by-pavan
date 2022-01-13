@@ -1,6 +1,7 @@
 package com.jarvis.language.controller;
 
 import com.jarvis.language.entity.Language;
+import com.jarvis.language.exception.LanguageDuplicationException;
 import com.jarvis.language.service.LanguageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,18 @@ import java.util.Optional;
 public class LanguageController {
 
     @Autowired
-    private LanguageService  languageService;
+    private LanguageService languageService;
 
     @PostMapping("/save")
-    public Language saveLanguage(@RequestBody Language language){
-        return languageService.saveLaguage(language);
+    public Language saveLanguage(@RequestBody Language language) throws LanguageDuplicationException {
+        if (languageService.checkLanguageExistence(language.getLanguage())) {
+            throw new LanguageDuplicationException(language.getLanguage() + " language already exist");
+        }
+        return languageService.saveLanguage(language);
     }
 
     @GetMapping("/{id}")
-    public Optional<Language> getLanguage(@PathVariable("id") Long languageId){
+    public Optional<Language> getLanguage(@PathVariable("id") Long languageId) {
         return languageService.getLanguage(languageId);
     }
 }
